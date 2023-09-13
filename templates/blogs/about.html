@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+
+    Know More About Us
+
+{% endblock title %}
+
+{% block body %}
+
+<div class="bg-purple-700 p-8 text-white">
+    <div class="max-w-2xl mx-auto">
+      <h1 class="text-4xl font-semibold">About Us</h1>
+      <p class="mt-4 text-lg">
+        Welcome to Our Django Blog, your trusted source for the latest science and technology news, articles, and insights. Our mission is to provide accurate and engaging information to help you stay informed about the ever-evolving world of science and technology.
+      </p>
+  
+      <h2 class="mt-8 text-2xl font-semibold">Our Mission</h2>
+      <p class="mt-4 text-lg">
+        At Our Django Blog, we are dedicated to exploring the frontiers of science and technology, from groundbreaking discoveries to innovative developments. We strive to make complex topics accessible to everyone, fostering a deeper understanding of the world around us.
+      </p>
+  
+      <h2 class="mt-8 text-2xl font-semibold">Become a Writer</h2>
+      <p class="mt-4 text-lg">
+        We believe in the power of collaboration and welcome passionate individuals to contribute to our blog. If you have a knack for science and technology and love sharing your insights, consider becoming a writer for [Your Blog Name]. Share your knowledge and reach a global audience interested in your expertise.
+      </p>
+  
+      <p class="mt-4 text-lg">
+        To join our team of writers, please <a href="/contact/">contact us</a> with your proposal, topic ideas, or writing samples. We look forward to working with talented individuals who share our enthusiasm for science and technology.
+      </p>
+  
+      <h2 class="mt-8 text-2xl font-semibold">Contact Us</h2>
+      <p class="mt-4 text-lg">
+        Have questions, suggestions, or feedback? We'd love to hear from you! Feel free to reach out to us through our <a href="/contact/">contact form</a> or via email at contact@us.com.
+      </p>
+  
+      <h2 class="mt-8 text-2xl font-semibold">Connect with Us</h2>
+      <p class="mt-4 text-lg">
+        Stay updated with the latest news and articles by following us on social media:
+      </p>
+
+    <!-- Social Media Icons -->
+    <div class="flex justify-center mt-4 space-x-4">
+        <a href="#" class="text-white text-2xl hover:text-gray-300 transition duration-300">
+          <i class="fab fa-facebook-square"></i>
+        </a>
+        <a href="#" class="text-white text-2xl hover:text-gray-300 transition duration-300">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="#" class="text-white text-2xl hover:text-gray-300 transition duration-300">
+          <i class="fab fa-twitter-square"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+{% endblock body %}

@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize%} 
+{% load extras %}
+
+{% block title %} {{blog.title}} {% endblock title %}
+
+
+{% block message %}
+    {% include 'blogs/messages.html' %}    
+
+{% endblock message %}
+
+{% block body %}
+
+
+        
+<div class="container mx-auto p-4">
+    <div class="grid grid-cols-12 gap-4">
+        <div class="col-span-8">
+            <div class="bg-white p-4 rounded shadow-md">
+                <div class='flex justify-between items-center'>
+                    <h1 class="text-3xl font-semibold my-3">{{ blog.title }}</h1>
+
+                    {% if blog.author_id.user_id == request.user %}
+                        <a class=' font-semibold my-3 text-green-700 underline' href="{% url "edit_blog" blog.id %}">
+                            <i class="far fa-edit"></i> Edit
+                        </a>
+                    {% endif %}
+                </div>
+                <p class="text-gray-500 text-sm">Uploaded on {{ blog.upload_date | date:"jS F, Y" }} by {{ blog.author_id }}</p>
+                <div class="my-2">
+                    <div class="flex items-center space-x-4">
+                        <span class="text-gray-500">{{ blog.like_count }} Likes</span>
+                        <span class="text-gray-500">{{ blog.view_count }} Views</span>
+                    </div>
+                </div>
+                <img src="{{ blog.thumbnail.url }}" alt="{{ blog.title }}" class="my-4 w-full" />
+
+                <div class="prose">
+                    {{ blog.content | safe }} <!-- Use "safe" filter to render HTML content safely -->
+                </div>
+            </div>
+
+          <!-- Comment Section -->
+          <div class="mt-8 bg-white p-4 rounded shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Comments</h2>
+
+            {% if request.user.is_authenticated %}
+            <!-- Add your comment form here -->
+                <form action="{% url 'blog_comment' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="comment">Your Comment:</label>
+                        <textarea id="comment" name="comment" class="w-full px-3 py-2 border rounded" rows="4" required></textarea>
+                        <input type="hidden" name="blog_id" id="blog_id" value="{{blog.id}}">
+                        <input type="hidden" name="parent_comment_id" id="parent_comment_id" value="">
+                    </div>
+                    <button type="submit" class="bg-purple-700 px-4 py-2 text-white rounded">Submit Comment</button>
+                </form>
+                {% else %}
+
+                <div>
+                    <p>
+                        <span class='underline font-semibold text-blue-600'>
+                            <a href="{% url 'login' %}?ReturnUrl={{blog.get_absolute_url}}">Login</a>
+                        </span> To Comment
+
+                    </p>
+                </div>
+
+            {% endif %}
+
+            <!-- Display existing comments here -->
+                <div class="mt-4">
+                    <!-- Loop through and display existing comments -->
+                    {% for comment in comments %}
+                        <div class="border rounded p-2 mb-2 text-black">
+                            <p class='flex space-x-5'> <span class='font-bold'> {{ comment.user_id.first_name }}</span> <span class='text-gray-600'>{{comment.created_on |naturaltime }} </span> </p>
+                            <p class=' text-gray-800'>{{ comment.comment }}</p>
+                            <button class='text-xs text-purple-700 border border-purple-700 px-4 rounded-md' id='reply_{{comment.id}}' onclick= "ShowForm({{comment.id}})" >Reply</button>
+                            {% for reply in replies|get_reply:comment.id  %}
+
+                                <div class='mx-5 pt-4'>
+                                    <p class='flex space-x-5'> <span class='font-bold'> {{ reply.user_id.first_name }}</span> <span class='text-gray-600'>{{reply.created_on |naturaltime }} </span> </p>
+                                    <p class=' text-gray-800'>{{ reply.comment }}</p>
+                                </div>
+
+                            {% endfor %}
+
+                            <form action="{% url 'blog_comment' %}" method="POST" id  =  'reply_form_{{comment.id}}'>
+                                {% csrf_token %}
+                                {% comment %} <div class="mb-2">
+                                    <textarea id="comment" name="comment" class="w-full px-3 py-2 border rounded" rows="2" required></textarea>
+                                    <input type="hidden" name="blog_id" value="{{blog.id}}">
+                                    <input type="hidden" name="parent_comment_id"  value="{{comment.id}}">
+                                </div>
+                                <button type="submit" class="bg-purple-700 text-xs px-3 py-1 text-white rounded"> Comment</button> {% endcomment %}
+                            </form>
+
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-span-4">
+            <div class="bg-white p-4 rounded shadow-md">
+                <h2 class="text-xl font-semibold">Table of Contents</h2>
+                <ul class="list-disc list-inside mt-2">
+                    {% for item  in table_of_content %}
+                    <!-- Generate your table of contents items dynamically if available -->
+                        <li><a href="#{{item | get_key }}">{{item | get_val }}</a></li>
+                      
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function  ShowForm(comment) {
+        console.log('form')
+        console.log(comment)
+        //document.getElementById('')
+
+        document.getElementById(`reply_form_${comment}`).innerHTML  =  `
+        <div class="mb-2">
+            {% csrf_token %}
+            <textarea id="comment" name="comment" class="w-full px-3 py-2 border rounded" rows="2" required></textarea>
+            <input type="hidden" name="blog_id" value="{{blog.id}}">
+            <input type="hidden" name="parent_comment_id"  value="${comment}">
+        </div>
+        <div class='flex space-x-5'>
+            <button type="submit" class="bg-purple-700 text-xs px-3 py-1 text-white rounded"> Comment</button>
+            <button type="button" class="bg-purple-700 text-xs px-3 py-1 text-white rounded" id ='cancel_button_${comment}' onclick="cancelReply(${comment})" > Cancel</button>
+        </div>
+        `
+    }
+
+    function  cancelReply(comment) {
+        document.getElementById(`reply_form_${comment}`).innerHTML  =  ''
+
+    }
+</script>
+
+{% endblock body %}

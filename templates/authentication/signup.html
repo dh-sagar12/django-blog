@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign up- A Support APP{% endblock title %}
+
+<style>
+    .dob{
+        text-transform: uppercase;
+    }
+</style>
+
+{% block body %}
+<div class="relative flex flex-col justify-center min-h-screen overflow-hidden">
+    <div class="w-full p-6  m-auto bg-white border-t-4 border-purple-600 rounded-md shadow-md border-top lg:max-w-lg">
+    {% comment %} {% include 'home/message.html' %} {% endcomment %}
+        <h1 class="text-3xl font-semibold text-center text-purple-600">Sign up</h1>
+        <form method="post" action='/auth/signup/' class="mt-4">
+            {% csrf_token %}
+            <div>
+                {{form.email}}
+                <span>{{form.email.errors}}</span>
+            </div>
+            <div class='flex items-center w-fit-content'>
+                <div class=" w-full">
+                    {{form.first_name}}
+                <span>{{form.first_name.errors}}</span>
+                </div>
+                <div class="mx-1 w-full">
+                    {{form.middle_name}}
+                <span>{{form.middle_name.errors}}</span>
+                </div>
+            </div>
+            <div>
+                {{form.last_name}}
+                <span>{{form.last_name.errors}}</span>
+            </div>
+            <div class="mt-2 mb-1">
+                <label for="gender" class="block text-xs text-gray-500 m-0 leading-none mx-1">Gender:</label>
+                {{form.gender}}
+                <span>{{form.gender.errors}}</span>
+            </div>
+            <div class="mb-1">
+                <label for="gender" class="block text-xs text-gray-500 m-0 leading-none mx-1">Date Of Birth:</label>
+                <span class="dob">{{form.date_of_birth}}</span>
+                <span>{{form.date_of_birth.errors}}</span>
+
+            </div>
+            <div class="mb-1">
+                <label for="password1" class="block text-xs text-gray-500 m-0 leading-none mx-1">Password:</label>
+                {{form.password1}}
+                <span>{{form.password1.errors}}</span>
+                <!-- <span class="text-xs text-red-500 px-3">{{form.error_messages.password_mismatch}}</span> -->
+            </div>
+            <div class="mb-1">
+                <label for="password2" class="block text-xs text-gray-500 m-0 leading-none mx-1">Confirm Password:</label>
+                {{form.password2}}
+                <span>{{form.password2.errors}}</span>
+
+            </div>
+            <div class="mt-6">
+                <button
+                    class="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-purple-600 rounded-md hover:bg-purple-600 focus:outline-none focus:bg-purple-600">
+                    Sign Up
+                </button>
+            </div>
+        </form>
+        <p class="mt-8 text-sm font-light text-center text-gray-700">Already have an account? <a
+                href="{% url 'login' %}" class="font-medium text-md text-purple-600 hover:underline">Log In</a></p>
+    </div>
+</div>
+
+{% endblock body %}

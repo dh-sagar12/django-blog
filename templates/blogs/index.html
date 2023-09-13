@@ -1,0 +1,119 @@
+{% extends 'base.html' %} 
+{% load extras %}
+{% load static %} 
+
+{% block title %} Home- Django Blog
+{% endblock title %} {% block body %}
+
+
+
+<div
+  class="relative bg-cover bg-center h-64"
+  style="background-image: url('/Resources/{{ feature_post_data.thumbnail }}');"
+>
+  <div class="absolute inset-0 bg-black opacity-40"></div>
+  <div class="absolute inset-0 flex items-end justify-center">
+    <div
+      class="text-center text-white w-full py-6 px-4"
+      style="background-color: #4747471f"
+    >
+      <h2 class="text-3xl font-semibold mb-2">{{ feature_post_data.title }}</h2>
+      <p class="text-lg mb-4">
+        {{ feature_post_data.content | truncatechars:200 | safe }}
+      </p>
+      <a
+        href="{{ feature_post_data.get_absolute_url }}"
+        class="text-xl font-semibold underline hover:text-gray-300"
+        >Read More</a
+      >
+    </div>
+  </div>
+</div>
+
+<!--explore tab -->
+<h3 class="text-center my-3 text-2xl">Explore</h3>
+
+<section class="my-5">
+  <div
+    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+  >
+
+  {% if all_blogs.count >  0 %}
+    {% for blog in all_blogs %}
+
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+      <a href="{{ blog.get_absolute_url }}">
+        <img
+          src="{{ blog.thumbnail.url }}"
+          alt="Blog Image 2"
+          class="w-full h-40 object-cover"
+        />
+      </a>
+
+      <div class="p-4">
+        <!-- Content (Title, Author, Tags, Views, Category) -->
+        <span>
+          {% for category in blog.category.all %}
+          <span class="bg-purple-600 text-white text-sm rounded-sm lora px-2"
+            >{{ category.category_name }}</span
+          >
+          {% endfor %}
+        </span>
+        <a href="{{ blog.get_absolute_url }} ">
+          <h2 class="text-xl font-semibold text-gray-800 mb-2 cursor-pointer">
+            {{ blog.title }}
+          </h2>
+        </a>
+        <div class="flex justify-between">
+          <span class="text-xs lora text-purple-700">{{blog.upload_date | date:"jS F, Y" }} </span>
+          <span class="text-xs lora text-purple-700"
+            >{{blog.content | min_to_read}} Min to Read  &rarr;
+          </span>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+
+    {% else %}
+
+    <div class='flex justify-center w-full'>
+      <p class='text-center py-6'>No Items To Show</p>
+    </div>
+  
+    {% endif %}
+
+    <!-- Repeat the pattern for Cards 3 and 4, and so on -->
+
+  </div>
+
+  <!--pagination -->
+
+  <div class="flex justify-between my-4">
+    <div>
+      {% if all_blogs.has_previous %}
+
+      <a
+        class="bg-purple-700 px-2 py-1 text-white rounded-md"
+        href="?page={{allPosts.next_page_number}}"
+        >← Previous
+      </a>
+      {% endif %}
+    </div>
+
+    <div>
+      {% if all_blogs.has_next %}
+      <a
+        class="p-2 text-center text-white rounded-md bg-purple-700"
+        href="?page={{all_blogs.next_page_number}}"
+      >
+        Next &rarr;</a
+      >
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!--section for feature blog ends here-->
+
+{% endblock body %}

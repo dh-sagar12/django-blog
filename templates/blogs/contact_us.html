@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Contact Us
+{% endblock title %}
+
+{% block body %}
+
+<div class=' justify-evenly items-center '>
+    <h1 class="text-3xl pt-6  text-center">{{form_title}} {% if id %}<span>#{{id}}</span>{% endif %}</h1>
+    <p class='pb-12 text-center'>Fill in the form and we will reach out as soon as possible </p>
+</div>
+<form enctype="multipart/form-data"  action="" method="post">
+    <div class=" flex w-1/2 mx-auto flex-col justify-center item-center space-y-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="px-4 py-1 bg-purple-600 text-white my-4 w-1/4 rounded-md shadow-md">Send</button>
+        
+    </div>
+</form>
+
+{% endblock body %}
+

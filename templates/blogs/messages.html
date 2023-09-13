@@ -1,0 +1,34 @@
+{% if messages %}
+  {% for message in messages %}
+
+    <style>
+        .success {
+          background-color: #43df40;
+          color: rgb(255 255 255);
+
+        }
+
+        .error {
+          background-color: rgb(255, 0, 0);
+          color: rgb(255 255 255);
+
+
+        }
+    </style>
+    <div class="text-center {{message.tags}} text-sm " id='message'>
+      <strong class="">{{message}}</strong>
+    </div>
+
+    <script>
+        let message =  document.getElementById('message')
+        function clearMessage() {
+            message.style.display  =  'none'
+        }
+        
+        setTimeout(clearMessage, 2000);
+
+        
+    </script>
+    
+ {% endfor %}
+{% endif %}

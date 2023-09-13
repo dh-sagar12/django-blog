@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load extras %} 
+
+
+{% block body %}
+<div>
+  
+  <style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td,
+    th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
+  </style>
+
+  <h2 class="text-2xl font-bold py-2">Manage Your Blog</h2>
+  <div class="py-2">
+    <button class="px-4 py-1 bg-purple-600 text-white">
+      <a href="{% url 'add_blog' %}">Add New</a>
+    </button>
+  </div>
+  <div>
+    <table>
+      <tr>
+        <th>Title</th>
+        <th>Slug</th>
+        <th>Upload Date</th>
+        <th>Views</th>
+        <th>Likes</th>
+        <th>Cateogry</th>
+        <th>Published</th>
+        <th>Action</th>
+      </tr>
+
+      {% for blog in blogs %}
+      <tr>
+        <td>
+          <a
+            href="{% url 'edit_blog' blog.id %}"
+            class="hover:underline semi-bold"
+            >{{blog.title}}</a
+          >
+        </td>
+        <td>{{blog.slug}}</td>
+        <td>{{blog.upload_date | date:"jS F, Y" }}</td>
+        <td>{{blog.view_count}}</td>
+        <td>{{blog.like_count}}</td>
+        <td>
+            {% for category in blog.category.all %}
+                <span class="bg-purple-600 text-white text-sm rounded-sm lora px-2"
+                    >{{ category.category_name }}</span
+                >
+            {% endfor %}
+        </td>
+        <td>{{blog.is_published}}</td>
+        <td class='flex flex-col'>
+          {% if blog.is_published %}
+
+            <a href="{% url 'unpublish_blog' blog.id %}" class='underline'>Unpublish</a>
+
+          {% else %}
+            <a href="{% url 'unpublish_blog' blog.id%}" class='underline text-green-700'>Publish</a>
+          {% endif %}
+
+          <a href="{% url 'delete_blog' blog.id %}" class='underline text-red-400'>Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+</div>
+{% endblock body %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block body %}
+<div class='flex justify-evenly items-center'>
+    <h1 class="text-3xl pt-6 pb-12 text-center">{{form_title}} {% if id %}<span>#{{id}}</span>{% endif %}</h1>
+
+    {% if blog %}
+        <p class='text-sm pt-6  pb-12 text-center'>
+            <a href="{% url 'blog_detail' blog.slug %}" class='underline text-blue-700'>View Live</a>
+        </p>
+    {% endif %}
+</div>
+<form enctype="multipart/form-data"  action="" method="post">
+    <div class=" flex w-3/4 mx-auto flex-col justify-center item-center space-y-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+
+
+        <button type="submit" class="px-4 py-1 bg-purple-600 text-white my-4 w-1/4 rounded-md shadow-md">Save</button>
+        
+    </div>
+</form>
+
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+
+<script>
+        let title =  document.getElementById('id_title')
+        let slug =  document.getElementById('id_slug')
+
+        title.addEventListener('change', (event)=>{
+            console.log(event.target.value)
+            console.log('event.target.value')
+            let title_value =  event.target.value
+            let slug_value  =  slugify(title_value)
+            slug.value  =  slug_value
+        })
+
+
+        function slugify(value) {
+            const slugify_value = value
+            .toLowerCase()
+            .replace(/[^a-zA-Z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+            return slugify_value
+        }
+      
+</script>
+
+{% endblock body %}
