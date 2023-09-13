@@ -17,5 +17,6 @@ urlpatterns = [
     path("blog/delete/<int:id>/", views.DeleteBlog, name="delete_blog"),
     path("about/", views.AboutUs, name="about_us"),
     path("categories/", views.CategoriesView, name="categories"),
+    path("like/blog/", views.LikeBlog, name="like_blog"),
 
 ]

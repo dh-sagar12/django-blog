@@ -1,5 +1,7 @@
 from django import template
 
+from blog.models import Blog
+
 register = template.Library()
 
 @register.filter(name= 'min_to_read')
@@ -19,3 +21,11 @@ def get_key(item):
 @register.filter(name='get_reply')
 def get_reply(replies, reply_id):
     return replies.get(reply_id)
+
+@register.filter(name='liked')
+# @register.inclusion_tag('blogs/blog_details.html', takes_context=True)
+def liked(blog, user):
+    # liked =  blog.like_count.filter(user_id=  user.id).exists()
+    liked =  blog.like_count.filter(id= user.id).exists()
+    return liked
+ 

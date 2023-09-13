@@ -28,10 +28,29 @@
                         </a>
                     {% endif %}
                 </div>
-                <p class="text-gray-500 text-sm">Uploaded on {{ blog.upload_date | date:"jS F, Y" }} by {{ blog.author_id }}</p>
+                <div class='flex justify-between'>
+                    <p class="text-gray-500 text-sm">Uploaded on {{ blog.upload_date | date:"jS F, Y" }} by {{ blog.author_id }}</p>
+
+                    {% if request.user.is_authenticated %}
+
+                        {% if blog|liked:request.user %}
+                            <input type="hidden" id='like_value' value="UNLIKE">
+                            <button class='like_btn'>
+                                <i id = 'like_icon' class="fas fa-thumbs-up text-red-700  text-2xl"></i>
+                            </button>
+                        {% else %}
+                            <input type="hidden" value="LIKE" id='like_value'>
+                            <button class='like_btn'>
+                                <i id = 'like_icon' class="far fa-thumbs-up text-2xl"></i>
+                            </button>
+                        {% endif %}
+                    {% endif %}
+                </div>
                 <div class="my-2">
                     <div class="flex items-center space-x-4">
-                        <span class="text-gray-500">{{ blog.like_count }} Likes</span>
+                        <span class="text-gray-500" >
+                            <span id='like_display' value='{{blog.like_count.count}}' >{{ blog.like_count.count }}</span>
+                             Likes</span>
                         <span class="text-gray-500">{{ blog.view_count }} Views</span>
                     </div>
                 </div>
@@ -145,6 +164,51 @@
         document.getElementById(`reply_form_${comment}`).innerHTML  =  ''
 
     }
+
+
+    let like_value  = document.getElementById('like_value')
+    let like_icon  = document.getElementById('like_icon')
+    let like_display  =  document.getElementById('like_display')
+
+    $('.like_btn').click( function(e) {
+        console.log('clicking')
+    $.ajax( {
+        type: 'POST',
+        url: '/like/blog/',
+        data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            'action': like_value.value, 
+            'blog_id': {{blog.id}}
+        },
+        success: function(){
+            console.log(like_value.value)
+            let like_count = parseInt(like_display.getAttribute('value'))
+            if( like_value.value  =='LIKE') {
+                like_value.value  = 'UNLIKE'
+                like_icon.classList.remove('far') 
+                like_icon.classList.add('text-red-700') 
+                like_icon.classList.add('fas') 
+                like_display.setAttribute('value', like_count + 1)
+                like_display.innerText = like_count+ 1
+            }
+            else{
+                like_value.value  = 'LIKE'
+                like_icon.classList.remove('fas') 
+                like_icon.classList.remove('text-red-700') 
+                like_icon.classList.add('far') 
+                if (like_count >  0) {
+                    like_display.setAttribute('value', like_count - 1)
+                    like_display.innerText = like_count- 1
+                }
+            }
+
+        }
+    })
+    })
+
+
+
+
 </script>
 
 {% endblock body %}

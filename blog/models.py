@@ -70,7 +70,7 @@ class Blog(models.Model):
     thumbnail = models.ImageField(upload_to= 'Blog/Images')
     is_featured = models.BooleanField(default=False)
     is_published = models.BooleanField(default=False)
-    like_count  =  models.IntegerField(default=0,  null=False, blank=False)
+    like_count  =  models.ManyToManyField(User, related_name='blog_like_count')
     uploaded_by =  models.ForeignKey(User, on_delete=models.DO_NOTHING, null=False, blank=False, db_column='uploaded_by')
 
     class Meta:

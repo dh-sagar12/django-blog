@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.http import JsonResponse
 
 
 
@@ -165,7 +166,6 @@ def EditBlog(request, id):
 
 
 
-# @author_can_access
 @login_required(login_url='/auth/login/', redirect_field_name='ReturnUrl')
 def NewBlog(request):
     context = {
@@ -199,7 +199,7 @@ def BeAnAuthor(request):
         if author.is_verified:
             messages.success(request, 'You Are Already An Author')
         else:
-            messages.success(request, 'You Are Already Applied For Author')
+            messages.success(request, 'You Have Already Applied For Author')
 
         return redirect('edit_be_an_author', author.id)
 
@@ -214,7 +214,7 @@ def BeAnAuthor(request):
         if request.method =='POST':
             form  =  AuthorForm(request.POST or None, request.FILES or None)
             if form.is_valid():
-                form.save()
+                form.save(request_context =  request)
                 messages.success(request, 'Form Has been Submmitted. We will Contact you Shortly After Verification ')
                 return redirect(reverse('home'))
             else:
@@ -264,7 +264,7 @@ def EditBeAnAuthor(request, id):
     
 
 
-
+@login_required(login_url='/auth/login/', redirect_field_name='ReturnUrl')
 def UnpublishBlog(request, id):
     try:
         author =  get_object_or_404(Author, user_id = request.user.id)
@@ -283,7 +283,7 @@ def UnpublishBlog(request, id):
         messages.error(request, e)
         return redirect(reverse('list_blog'))
     
-
+@login_required(login_url='/auth/login/', redirect_field_name='ReturnUrl')
 def DeleteBlog(request, id):
     try:
         author =  get_object_or_404(Author, user_id = request.user.id)
@@ -336,3 +336,18 @@ def AboutUs(request):
 def CategoriesView(request):
     categories  =  Category.objects.all()
     return render(request, 'blogs/categories.html', context= {'categories': categories})
+
+
+@login_required(login_url='/auth/login/', redirect_field_name='ReturnUrl')
+def LikeBlog(request):
+    if request.method == 'POST':
+        action =  request.POST.get('action')
+        blog_id = request.POST.get('blog_id')
+        blog_instance =  Blog.objects.get(id= blog_id)
+        if action  == 'UNLIKE':
+            blog_instance.like_count.remove(request.user)
+        else:
+            blog_instance.like_count.add(request.user)
+        blog_instance.save()
+
+    return JsonResponse({'message': 'success' })

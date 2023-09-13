@@ -12,8 +12,6 @@ class CustomManyToManyFormField(forms.ModelMultipleChoiceField):
 
 class BlogForm(forms.ModelForm):
 
-    
-
     def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             for visible in self.visible_fields():
@@ -34,7 +32,6 @@ class BlogForm(forms.ModelForm):
     def save(self, commit = True, *args, **kwargs ):
         blog =  super().save(commit=False)
         context =  kwargs.get('request_context')
-        print(context)
         if context is not None:
             author_instance  =  Author.objects.filter(user_id =  context.user).first()
             blog.author_id =  author_instance
@@ -54,6 +51,14 @@ class   AuthorForm(forms.ModelForm):
     class Meta:
         model =  Author
         fields  =  ("name" , 'address', 'contact_number', 'about_you')
+    
+    def save(self, commit = True, *args, **kwargs ):
+        author =  super().save(commit=False)
+        context =  kwargs.get('request_context')
+        print(context)
+        if context is not None:
+            author.user_id =  context.user
+        super().save(commit=True)
 
 
 
